@@ -1,9 +1,18 @@
-from utils.network.headless import HeadlessBrowser
-from utils.network.headless import InvalidHTMLException, InvalidURLException
+from utils.network.headless import (
+    HeadlessBrowser, InvalidHTMLException, InvalidURLException
+)
+from utils.network.socket import Socket
 from utils.logging.log import Log
 
+from urllib.parse import urlparse
 
-class Crawler(object):
+
+class ObjectView:
+    """Convert dict into python class."""
+    def __init__(self, data):
+        self.__dict__ = data
+
+class Crawler:
     """
     DarkLight onion domain crawler.
     """
@@ -20,17 +29,18 @@ class Crawler(object):
             tor_network=True
         )
 
-        try:
-            browser.run(url)
+        domain = urlparse(url).netloc
 
-            result = {
-                'url': url,
-                'title': browser.get_title(),
-                'screenshot': browser.get_screenshot(),
-                'language': browser.get_lang(),
-                'source': browser.get_source(),
-                'sublinks': browser.get_sublinks()
-            }
+        try:
+            # Step 1. Visit website using headless tor browser
+            Log.d("Step 1. Visiting {} website using headless browser".format(url))
+            obj = browser.run(url)
+
+            # Step 2. Scan common service port
+            Log.d("Step 2. Scanning {} domain's common service port".format(domain))
+            obj.ports = self._portscan(domain)
+
+            # Step 3. TO-DO
 
         except InvalidHTMLException:
             Log.e("Invalid HTML returned from website")
@@ -41,7 +51,42 @@ class Crawler(object):
         finally:
             del browser
 
-        return result
+        return obj
+
+    def _portscan(self, domain):
+        socket = Socket(
+            tor_network=True,
+            ini=self.ini,
+        )
+
+        # common service port list
+        services = {
+            20: False,
+            21: False,
+            22: False,
+            23: False,
+            25: False,
+            80: False,
+            110: False,
+            123: False,
+            143: False,
+            389: False,
+            443: False,
+            993: False,
+            3389: False,
+            3306: False,
+        }
+
+        for key in services.keys():
+            opened = socket.ping_check(domain, key)
+            services[key] = opened
+            Log.d("{} port is {}".format(
+                key, 'opened' if opened else 'closed'
+            ))
+
+        del socket
+
+        return services
 
 
     def save(self):

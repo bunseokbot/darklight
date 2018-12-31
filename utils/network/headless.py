@@ -11,6 +11,8 @@ from PIL import Image
 from urllib.parse import urlparse
 from io import BytesIO
 
+from utils.type.dynamic import DynamicObject
+
 
 class InvalidURLException(Exception):
     # Invalid URL or Website is closed
@@ -71,6 +73,16 @@ class HeadlessBrowser:
             # website source code is not HTML
             raise InvalidHTMLException
 
+        return DynamicObject({
+            'url': url,
+            'domain': urlparse(url).netloc,
+            'title': self.get_title(),
+            'screenshot': self.get_screenshot(),
+            'source': self.get_source(),
+            'sublinks': self.get_sublinks(),
+            'language': self.get_language()
+        })
+
     def get_sublinks(self):
         """Get all href link from html source."""
         urls = []
@@ -101,7 +113,7 @@ class HeadlessBrowser:
         if self.driver.page_source != '<html><head></head><body></body></html>':
             return self.driver.page_source
 
-    def get_lang(self):
+    def get_language(self):
         """Get website html language code."""
         return self.soup.html.get('lang', '')
 
