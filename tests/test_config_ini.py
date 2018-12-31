@@ -9,8 +9,7 @@ def test_read_ini_file():
 
     # compare binary path
     binary_path = ini.read('HEADLESS', 'PATH')
-    assert \
-        binary_path == '/Users/bunseokbot/Documents/darklight_engine/tests/files/phantomjs'
+    assert binary_path == 'files/phantomjs'
 
     # compare elasticsearch host
     es_host = ini.read('ELASTICSEARCH', 'HOST')
