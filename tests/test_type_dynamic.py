@@ -21,3 +21,8 @@ def test_remove_object():
         assert do.a
 
     assert do.b
+
+
+def test_empty_data():
+    do = DynamicObject()
+    assert do.is_empty() == True
