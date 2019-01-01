@@ -3,14 +3,10 @@ from utils.network.headless import (
 )
 from utils.network.socket import Socket
 from utils.logging.log import Log
+from utils.type.dynamic import DynamicObject
 
 from urllib.parse import urlparse
 
-
-class ObjectView:
-    """Convert dict into python class."""
-    def __init__(self, data):
-        self.__dict__ = data
 
 class Crawler:
     """
@@ -30,6 +26,7 @@ class Crawler:
         )
 
         domain = urlparse(url).netloc
+        obj = DynamicObject()
 
         try:
             # Step 1. Visit website using headless tor browser
@@ -54,6 +51,7 @@ class Crawler:
         return obj
 
     def _portscan(self, domain):
+        """Scan and check opened port."""
         socket = Socket(
             tor_network=True,
             ini=self.ini,
@@ -73,8 +71,8 @@ class Crawler:
             389: False,
             443: False,
             993: False,
-            3389: False,
             3306: False,
+            3389: False,
         }
 
         for key in services.keys():
@@ -87,7 +85,6 @@ class Crawler:
         del socket
 
         return services
-
 
     def save(self):
         """Save crawled data into database."""

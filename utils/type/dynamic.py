@@ -5,3 +5,7 @@ class DynamicObject:
 
     def pop(self, key):
         return self.__dict__.pop(key)
+
+    def is_empty(self):
+        # check if data is empty
+        return self.__dict__ == {}
