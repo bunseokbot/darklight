@@ -7,10 +7,13 @@ Developed by Namjun Kim (bunseokbot@gmail.com)
 import requests
 import random
 
+from utils.logging.log import Log
+
 
 class HTTP:
     """HTTP Communication class for request & response from remote HTTP server."""
-    def request(self, url, tor_network=False, ini=None):
+    @classmethod
+    def request(cls, url, tor_network=False, ini=None):
         """Request URL and get response header and body"""
         try:
             if tor_network:
@@ -21,14 +24,15 @@ class HTTP:
                     ini.read('TOR', 'HOST'),
                     ini.read('TOR', 'PORT'))
                 proxies = {'http': server, 'https': server}
-                return requests.get(url, proxies=proxies, headers=self._generate_custom_http_header())
+                return requests.get(url, proxies=proxies, headers=cls._generate_custom_http_header())
             else:
-                return requests.get(url, headers=self._generate_custom_http_header())
-        except:
+                return requests.get(url, headers=cls._generate_custom_http_header())
+        except Exception as e:
+            Log.e("Exception at HTTP::request\n{}".format(e))
             return None
 
-
-    def _generate_custom_http_header(self):
+    @staticmethod
+    def _generate_custom_http_header():
         """"""
         return {
             'User-Agent': random.choice([
