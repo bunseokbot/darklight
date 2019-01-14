@@ -1,4 +1,5 @@
 amqp==2.3.2
+anyjson==0.3.3
 atomicwrites==1.2.1
 attrs==18.2.0
 beautifulsoup4==4.6.3
@@ -11,15 +12,20 @@ Django==2.1.4
 idna==2.8
 image==1.5.27
 kombu==4.2.2.post1
+mock==2.0.0
 more-itertools==4.3.0
+pbr==5.1.1
 Pillow==5.3.0
 pluggy==0.8.0
 py==1.7.0
 PySocks==1.6.8
 pytest==4.0.2
+python-dateutil==2.7.5
 pytz==2018.7
+redis==3.0.1
 requests==2.21.0
 selenium==3.141.0
 six==1.12.0
+SQLAlchemy==1.2.16
 urllib3==1.24.1
 vine==1.1.4
