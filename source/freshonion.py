@@ -32,4 +32,3 @@ class FreshOnionCollector(SourceBase):
                 url = self._get_formed_url(row)
                 if url not in self.urls:
                     self.urls.append(url)
-
