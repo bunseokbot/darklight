@@ -1,6 +1,6 @@
 from database.session import Session
 from database.engine import Engine
-from database.models import Domain, Webpage, Port
+from database.models import Domain
 
 from utils.config.env import Env
 from utils.config.ini import Ini

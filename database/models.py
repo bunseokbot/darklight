@@ -32,25 +32,3 @@ class Domain(Base):
         return "<Domain('{}', '{}', '{}')>".format(
             self.uuid, self.scheme, self.netloc
         )
-
-
-class Webpage(Base):
-    __tablename__ = 'webpages'
-
-    id = Column(Integer, primary_key=True)
-    scanned_time = Column(DateTime)
-    domain_id = Column(Integer, ForeignKey('domains.id'))
-    domain = relationship('Domain', backref=backref('Webpage', order_by=id))
-    title = Column(String(255), nullable=True)
-    language = Column(String(10), nullable=True)
-    server = Column(String(255), nullable=True)
-    screenshot = Column(Text, nullable=False)
-
-
-class Port(Base):
-    __tablename__ = 'ports'
-
-    id = Column(Integer, primary_key=True)
-    webpage_id = Column(Integer, ForeignKey('webpages.id'))
-    webpage = relationship('Webpage', backref=backref('Port', order_by=id))
-    scanned_info = Column(Text, nullable=False)
