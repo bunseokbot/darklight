@@ -28,8 +28,7 @@ class HTTP:
             else:
                 return requests.get(url, headers=cls._generate_custom_http_header())
         except Exception as e:
-            Log.e("Exception at HTTP::request\n{}".format(e))
-            return None
+            Log.e("Exception at HTTP.request\n{}".format(e))
 
     @staticmethod
     def _generate_custom_http_header():

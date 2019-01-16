@@ -4,14 +4,11 @@ from .base import SourceBase
 
 from utils.logging.log import Log
 from utils.network.http import HTTP
-from utils.config.ini import Ini
-from utils.config.env import Env
 
 
 class FreshOnionCollector(SourceBase):
     cycle = 10  # minute
     name = 'freshonion'
-    ini = Ini(Env.read('CONFIG_FILE'))
 
     def _get_formed_url(self, row):
         parse = urlparse(row['url'])
@@ -24,6 +21,11 @@ class FreshOnionCollector(SourceBase):
             tor_network=True,
             ini=self.ini
         )
+
+        if not response:
+            Log.e("Exception accrued while loading website.")
+            return
+
         if response.status_code == 200:
             rows = response.json()
             Log.i("{} url detected from freshonion".format(len(rows)))

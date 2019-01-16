@@ -5,7 +5,7 @@ Developed by Namjun Kim (bunseokbot@gmail.com)
 """
 from utils.logging.log import Log
 
-import sources
+import source as sources
 
 
 def main():
