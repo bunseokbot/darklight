@@ -66,13 +66,18 @@ class Crawler:
             25: False,
             80: False,
             110: False,
-            123: False,
+            123: False,   # NTP
             143: False,
+            194: False,   # IRC
             389: False,
             443: False,
-            993: False,
+            993: False,   # IMAPS
             3306: False,
             3389: False,
+            5222: False,  # XMPP
+            6667: False,  # Public IRC
+            8060: False,  # OnionCat
+            8333: False,  # Bitcoin
         }
 
         for key in services.keys():
@@ -86,7 +91,7 @@ class Crawler:
 
         return services
 
-    def save(self):
+    def save(self, obj):
         """Save crawled data into database."""
         Log.i("Saving crawled data")
 
