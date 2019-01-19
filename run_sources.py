@@ -14,10 +14,18 @@ def main():
 
     for source in sources.__all__:
         _class = source()
-        Log.i("Trying to run {} source".format(_class.name))
-        _class.collect()
-        if _class.urls:
-            _class.save()
+        if _class.active:
+            Log.i("Trying to run {} source".format(_class.name))
+            try:
+                _class.collect()
+            except:
+                Log.e("Failed to collect data from {} source".format(_class.name))
+            if _class.urls:
+                _class.save()
+        else:
+            Log.i("{} source is now disabled".format(_class.name))
+
+        del _class
 
 if __name__ == "__main__":
     main()

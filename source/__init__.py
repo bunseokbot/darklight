@@ -1,3 +1,6 @@
 from .freshonion import FreshOnionCollector
+from .hiddenwiki import HiddenWikiCollector
 
-__all__ = [FreshOnionCollector]
+# all registered collector
+__all__ = [
+    FreshOnionCollector, HiddenWikiCollector]

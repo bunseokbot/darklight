@@ -8,7 +8,8 @@ from utils.network.http import HTTP
 
 class FreshOnionCollector(SourceBase):
     cycle = 10  # minute
-    name = 'freshonion'
+    name = 'freshonion'  # collector name
+    active = False  # collector status
 
     def _get_formed_url(self, row):
         parse = urlparse(row['url'])

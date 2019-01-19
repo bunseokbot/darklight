@@ -21,6 +21,7 @@ class SourceBase(object):
     """Base source object class format."""
     urls = []
     ini = Ini(Env.read('CONFIG_FILE'))
+    active = True  # collector status
 
     def collect(self):
         """
@@ -41,10 +42,10 @@ class SourceBase(object):
 
                 try:
                     session.add(Domain(task_id, url))
-                    task = CrawlerTask.apply_async(args=[url], task_id=task_id)
+                    task = CrawlerTask().apply_async(args=[url], task_id=task_id)
                     Log.i("CrawlerTask issued a new task id: {}".format(task.task_id))
                 except:
-                    Log.d("This {} url already saved into database.")
+                    Log.d("This {} url already saved into database.".format(url))
                 finally:
                     self.urls.remove(url)
 
