@@ -13,7 +13,7 @@ from utils.logging.log import Log
 class HTTP:
     """HTTP Communication class for request & response from remote HTTP server."""
     @classmethod
-    def request(cls, url, tor_network=False, ini=None):
+    def request(cls, url, tor_network=False, ini=None, timeout=300):
         """Request URL and get response header and body"""
         try:
             if tor_network:
@@ -24,9 +24,9 @@ class HTTP:
                     ini.read('TOR', 'HOST'),
                     ini.read('TOR', 'PORT'))
                 proxies = {'http': server, 'https': server}
-                return requests.get(url, proxies=proxies, headers=cls._generate_custom_http_header())
+                return requests.get(url, timeout=timeout, proxies=proxies, headers=cls._generate_custom_http_header())
             else:
-                return requests.get(url, headers=cls._generate_custom_http_header())
+                return requests.get(url, timeout=timeout, headers=cls._generate_custom_http_header())
         except Exception as e:
             Log.e("Exception at HTTP.request\n{}".format(e))
 
