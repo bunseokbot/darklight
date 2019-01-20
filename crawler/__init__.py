@@ -31,11 +31,11 @@ class Crawler:
         try:
             # Step 1. Visit website using headless tor browser
             Log.d("Step 1. Visiting {} website using headless browser".format(url))
-            obj = browser.run(url)
+            obj.webpage = browser.run(url)
 
             # Step 2. Scan common service port
             Log.d("Step 2. Scanning {} domain's common service port".format(domain))
-            obj.ports = self._portscan(domain)
+            obj.port = self._portscan(domain)
 
             # Step 3. TO-DO
 
