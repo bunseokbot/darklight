@@ -58,33 +58,33 @@ class Crawler:
         )
 
         # common service port list
-        services = {
-            20: False,
-            21: False,
-            22: False,
-            23: False,
-            25: False,
-            80: False,
-            110: False,
-            123: False,   # NTP
-            143: False,
-            194: False,   # IRC
-            389: False,
-            443: False,
-            993: False,   # IMAPS
-            3306: False,
-            3389: False,
-            5222: False,  # XMPP
-            6667: False,  # Public IRC
-            8060: False,  # OnionCat
-            8333: False,  # Bitcoin
-        }
+        services = [
+            {'number': 20, 'status': False},
+            {'number': 21, 'status': False},
+            {'number': 22, 'status': False},
+            {'number': 23, 'status': False},
+            {'number': 25, 'status': False},
+            {'number': 80, 'status': False},
+            {'number': 110, 'status': False},
+            {'number': 123, 'status': False},  # NTP
+            {'number': 143, 'status': False},
+            {'number': 194, 'status': False},  # IRC
+            {'number': 389, 'status': False},
+            {'number': 443, 'status': False},
+            {'number': 993, 'status': False},  # IMAPS
+            {'number': 3306, 'status': False},
+            {'number': 3389, 'status': False},
+            {'number': 5222, 'status': False}, # XMPP
+            {'number': 6667, 'status': False}, # Public IRC
+            {'number': 8060, 'status': False}, # OnionCat
+            {'number': 8333, 'status': False}, # Bitcoin
+        ]
 
-        for key in services.keys():
-            opened = socket.ping_check(domain, key)
-            services[key] = opened
+        for i in len(services):
+            opened = socket.ping_check(domain, services[i]['number'])
+            services[i]['status'] = opened
             Log.d("{} port is {}".format(
-                key, 'opened' if opened else 'closed'
+                services[i]['number'], 'opened' if opened else 'closed'
             ))
 
         del socket
