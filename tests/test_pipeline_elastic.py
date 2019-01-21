@@ -13,10 +13,8 @@ def test_start_connection():
         assert conn
 
 
-def test_add_new_webpage():
+def test_add_new_documents():
     with Elastic(ini=ini):
-        Webpage.init()
-
         webpage = Webpage(
             meta={'id': 1},
             url='https://www.test.onion',
@@ -33,14 +31,6 @@ def test_add_new_webpage():
 
         assert Webpage.get(id=1)
 
-        # remove index after test
-        Webpage._index.delete()
-
-
-def test_add_new_port():
-    with Elastic(ini=ini):
-        Port.init()
-
         services = [
             Service(number=80, status=True),
             Service(number=443, status=False),
@@ -51,4 +41,6 @@ def test_add_new_port():
 
         assert Port.get(id=1)
 
+        # remove index after test
+        Webpage._index.delete()
         Port._index.delete()

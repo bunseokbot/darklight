@@ -5,6 +5,8 @@ from utils.network.socket import Socket
 from utils.logging.log import Log
 from utils.type.dynamic import DynamicObject
 
+from pipeline import Pipeline
+
 from urllib.parse import urlparse
 
 
@@ -80,7 +82,7 @@ class Crawler:
             {'number': 8333, 'status': False}, # Bitcoin
         ]
 
-        for i in len(services):
+        for i in range(len(services)):
             opened = socket.ping_check(domain, services[i]['number'])
             services[i]['status'] = opened
             Log.d("{} port is {}".format(
@@ -91,9 +93,12 @@ class Crawler:
 
         return services
 
-    def save(self, obj):
+    def save(self, id, obj):
         """Save crawled data into database."""
         Log.i("Saving crawled data")
+
+        with Pipeline(id=id, obj=obj, ini=self.ini) as pipeline:
+            pipeline.save()
 
     def __del__(self):
         Log.i("Ending crawler")

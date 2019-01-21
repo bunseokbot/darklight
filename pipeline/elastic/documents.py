@@ -1,4 +1,5 @@
-from elasticsearch_dsl import Document, Integer, Keyword, Text, Nested, Boolean, InnerDoc
+from elasticsearch_dsl import Document, Integer, Keyword, Text,\
+                                Nested, Boolean, InnerDoc, Index
 
 
 class Webpage(Document):
