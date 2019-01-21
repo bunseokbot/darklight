@@ -1,4 +1,4 @@
-from elasticsearch_dsl import Document, Integer, Keyword, Text, Nested, Boolean
+from elasticsearch_dsl import Document, Integer, Keyword, Text, Nested, Boolean, InnerDoc
 
 
 class Webpage(Document):
@@ -16,14 +16,13 @@ class Webpage(Document):
         }
 
 
+class Service(InnerDoc):
+    number = Integer()
+    status = Boolean()
+
+
 class Port(Document):
-    services = Nested(
-        include_in_parent=True,
-        properties={
-            'number': Integer(),
-            'status': Boolean()
-        }
-    )
+    services = Nested(Service)
 
     class Index:
         name = 'port'
