@@ -5,9 +5,12 @@ from utils.network.socket import Socket
 from utils.logging.log import Log
 from utils.type.dynamic import DynamicObject
 
-from pipeline import Pipeline
+from pipeline.elastic import Elastic
+from pipeline.elastic.documents import Webpage, Service, Port
 
 from urllib.parse import urlparse
+
+import pipeline as pipelines
 
 
 class Crawler:
@@ -97,8 +100,40 @@ class Crawler:
         """Save crawled data into database."""
         Log.i("Saving crawled data")
 
-        with Pipeline(id=id, obj=obj, ini=self.ini) as pipeline:
-            pipeline.save()
+        meta = {
+            'id': id,
+        }
+
+        # pass the pipeline before saving data (for preprocessing)
+        for pipeline in pipelines.__all__:
+            _class = pipeline(data=obj, ini=self.ini)
+
+            if _class.active:
+                _class.handle()
+            else:
+                Log.i("{} pipeline isn't active".format(_class.name))
+
+            del _class
+
+        with Elastic(ini=self.ini):
+            # upload screenshot at Amazon S3
+            screenshot = 'https://darklight.amazon.com/s3/bucket/filename.png'
+
+            Webpage(
+                meta=meta,
+                url=obj.webpage.url,
+                domain=obj.webpage.domain,
+                title=obj.webpage.title,
+                source=obj.webpage.source,
+                screenshot=screenshot,
+                language=obj.webpage.language,
+            ).save()
+
+            Port(
+                meta=meta,
+                services=[
+                    Service(number=port['number'], status=port['status']) for port in obj.port]
+            ).save()
 
     def __del__(self):
         Log.i("Ending crawler")
