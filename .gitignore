@@ -8,6 +8,7 @@ __pycache__/
 
 # Other custom sources
 source/*.py
+pipeline/source/*.py
 
 # Distribution / packaging
 .Python

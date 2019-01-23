@@ -5,6 +5,10 @@ from utils.network.socket import Socket
 from utils.logging.log import Log
 from utils.type.dynamic import DynamicObject
 
+from database.session import Session
+from database.engine import Engine
+from database.models import Domain
+
 from pipeline.elastic import Elastic
 from pipeline.elastic.documents import Webpage, Service, Port
 
@@ -96,17 +100,24 @@ class Crawler:
 
         return services
 
-    def save(self, uuid, obj):
+    def save(self, id, obj):
         """Save crawled data into database."""
         Log.i("Saving crawled data")
 
         meta = {
-            'id': uuid,
+            'id': id,
         }
+
+        engine = Engine.create(ini=self.ini)
+
+        with Session(engine=engine) as session:
+            domain = session.query(Domain).filter_by(uuid=id).first()
+
+        engine.dispose()
 
         # pass the pipeline before saving data (for preprocessing)
         for pipeline in pipelines.__all__:
-            _class = pipeline(uuid, data=obj, ini=self.ini)
+            _class = pipeline(domain, data=obj, ini=self.ini)
 
             if _class.active:
                 Log.d("handling the {} pipeline".format(_class.name))
