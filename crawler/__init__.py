@@ -10,7 +10,7 @@ from pipeline.elastic.documents import Webpage, Service, Port
 
 from urllib.parse import urlparse
 
-import pipeline as pipelines
+import pipeline.source as pipelines
 
 
 class Crawler:
@@ -96,22 +96,23 @@ class Crawler:
 
         return services
 
-    def save(self, id, obj):
+    def save(self, uuid, obj):
         """Save crawled data into database."""
         Log.i("Saving crawled data")
 
         meta = {
-            'id': id,
+            'id': uuid,
         }
 
         # pass the pipeline before saving data (for preprocessing)
         for pipeline in pipelines.__all__:
-            _class = pipeline(data=obj, ini=self.ini)
+            _class = pipeline(uuid, data=obj, ini=self.ini)
 
             if _class.active:
+                Log.d("handling the {} pipeline".format(_class.name))
                 _class.handle()
             else:
-                Log.i("{} pipeline isn't active".format(_class.name))
+                Log.d("{} pipeline isn't active".format(_class.name))
 
             del _class
 

@@ -32,3 +32,15 @@ class Domain(Base):
         return "<Domain('{}', '{}', '{}')>".format(
             self.uuid, self.scheme, self.netloc
         )
+
+
+def get_or_create(session, model, **kwargs):
+    """Get instance or if not exist, create a new instance."""
+    instance = session.query(model).filter_by(**kwargs).first()
+    if instance:
+        return instance
+    else:
+        instance = model(**kwargs)
+        session.add(instance)
+        session.commit()
+        return instance
