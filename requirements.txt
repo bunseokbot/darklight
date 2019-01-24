@@ -1,5 +1,6 @@
 amqp==2.3.2
 anyjson==0.3.3
+APScheduler==3.5.3
 atomicwrites==1.2.1
 attrs==18.2.0
 beautifulsoup4==4.6.3
@@ -29,5 +30,6 @@ requests==2.21.0
 selenium==3.141.0
 six==1.12.0
 SQLAlchemy==1.2.16
+tzlocal==1.5.1
 urllib3==1.24.1
 vine==1.1.4
