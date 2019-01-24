@@ -13,4 +13,4 @@ def test_read_ini_file():
 
     # compare elasticsearch host
     es_host = ini.read('ELASTICSEARCH', 'HOST')
-    assert es_host == '1.1.1.1'
+    assert es_host
