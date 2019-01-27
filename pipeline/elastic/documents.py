@@ -2,6 +2,18 @@ from elasticsearch_dsl import Document, Integer, Keyword, Text,\
                                 Nested, Boolean, InnerDoc, Index
 
 
+class Header(InnerDoc):
+    name = Keyword()
+    value = Keyword()
+
+
+class Tree(InnerDoc):
+    url = Keyword()
+    status = Integer()
+    content = Keyword()
+    parent = Keyword()
+
+
 class Webpage(Document):
     url = Keyword()
     domain = Keyword()
@@ -9,6 +21,8 @@ class Webpage(Document):
     screenshot = Keyword()
     source = Text()
     language = Keyword()
+    headers = Nested(Header)
+    tree = Nested(Tree)
 
     class Index:
         name = 'webpage'

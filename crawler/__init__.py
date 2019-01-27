@@ -139,6 +139,7 @@ class Crawler:
                 source=obj.webpage.source,
                 screenshot=screenshot,
                 language=obj.webpage.language,
+                headers=obj.webpage.headers,
             ).save()
 
             Port(

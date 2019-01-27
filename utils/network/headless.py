@@ -13,6 +13,8 @@ from io import BytesIO
 
 from utils.type.dynamic import DynamicObject
 
+import json
+
 
 class InvalidURLException(Exception):
     # Invalid URL or Website is closed
@@ -66,12 +68,16 @@ class HeadlessBrowser:
         if not self.get_source():
             raise InvalidURLException
 
+        # run HTML parser for parse data from source
         try:
             # beautifulsoup object for parse html source
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         except:
             # website source code is not HTML
             raise InvalidHTMLException
+
+        # get HAR from driver
+        self.har = json.loads(self.driver.get_log('har')[0]['message'])
 
         return DynamicObject({
             'url': url,
@@ -80,8 +86,31 @@ class HeadlessBrowser:
             'screenshot': self.get_screenshot(),
             'source': self.get_source(),
             'sublinks': self.get_sublinks(),
-            'language': self.get_language()
+            'language': self.get_language(),
+            'headers': self.get_headers(),
+            'tree': self.get_website_tree(),
         })
+
+    def get_website_tree(self):
+        """Get webpage tree (entries) and load status."""
+        tree = []
+
+        for entries in self.har['log']['entries']:
+            referer = list(
+                filter(lambda x: x['name'] == 'Referer', entries['request']['headers']))
+            data = {
+                'url': entries['request']['url'],
+                'status': entries['response']['status'],
+                'content': entries['response']['content']['mimeType'].split(';')[0].strip(),
+                'parent': None
+            }
+
+            if referer:
+                data['parent'] = referer[0]['value']
+
+            tree.append(data)
+
+        return tree
 
     def get_sublinks(self):
         """Get all href link from html source."""
@@ -102,11 +131,25 @@ class HeadlessBrowser:
         return urls
 
     def get_title(self):
-        """Get Website title."""
+        """Get website title."""
+        title = ''
+
         try:
-            return self.soup.title.string
+            title = self.soup.title.string
         except:
-            return ''
+            pass
+
+        try:
+            if not title:
+                title = self.har['log']['pages'][0]['title']
+        except:
+            pass
+
+        return title
+
+    def get_headers(self):
+        """Get response header value."""
+        return self.har['log']['entries'][0]['response']['headers']
 
     def get_source(self):
         """Get HTML rendered source."""
