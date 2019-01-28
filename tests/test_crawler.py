@@ -11,7 +11,7 @@ def test_load_crawler():
 
     report = crawler.scan('http://wikitjerrta4qgz4.onion')
     assert type(report) == DynamicObject
-    assert report.url == 'http://wikitjerrta4qgz4.onion'
-    assert report.domain == 'wikitjerrta4qgz4.onion'
+    assert report.webpage.url == 'http://wikitjerrta4qgz4.onion'
+    assert report.webpage.domain == 'wikitjerrta4qgz4.onion'
 
     del crawler
