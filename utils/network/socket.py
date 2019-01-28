@@ -22,19 +22,18 @@ class Socket:
 
     def ping_check(self, address, port):
         """Ping check for check port open."""
-        sock = socks.socksocket()
-        if self.tor_network:
-            sock.setproxy(
-                socks.PROXY_TYPE_SOCKS5,
-                self.ini.read('TOR', 'HOST'),
-                int(self.ini.read('TOR', 'PORT')))
+        with socks.socksocket() as sock:
+            if self.tor_network:
+                sock.setproxy(
+                    socks.PROXY_TYPE_SOCKS5,
+                    self.ini.read('TOR', 'HOST'),
+                    int(self.ini.read('TOR', 'PORT')))
+            try:
+                sock.connect((address, port))
+                return True
+            except:
+                return False
 
-        try:
-            sock.connect((address, port))
-            sock.close()
-            return True
-        except:
-            return False
 
     def __del__(self):
         del self

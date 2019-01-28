@@ -1,6 +1,8 @@
 import logging
 import logging.handlers
 
+import traceback
+
 
 class Log:
     """DarkLight Logger."""
@@ -39,9 +41,13 @@ class Log:
         cls.__logger.warning(message)
 
     @classmethod
-    def e(cls, message):
+    def e(cls, message, trace_exc=True):
         # error log
-        cls.__logger.error(message)
+        if trace_exc:
+            error = traceback.format_exc()
+            cls.__logger.error(f"{message}\n{error}")
+        else:
+            cls.__logger.error(f"{message}")
 
     @classmethod
     def c(cls, message):
