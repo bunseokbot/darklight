@@ -20,7 +20,7 @@ class Socket:
     def __exit__(self, exc_type, exc_val, exc_tb):
         pass
 
-    def ping_check(self, address, port):
+    def ping_check(self, address, port, count=0):
         """Ping check for check port open."""
         with socks.socksocket() as sock:
             if self.tor_network:
@@ -31,8 +31,11 @@ class Socket:
             try:
                 sock.connect((address, port))
                 return True
-            except:
-                return False
+            except Exception as e:
+                if count > 10 or '0x05' in e.msg:
+                    return False
+
+                return self.ping_check(address, port, count+1)
 
 
     def __del__(self):
