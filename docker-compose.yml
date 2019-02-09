@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  torproxy:
+    build:
+      context: .
+      dockerfile: Dockerfile-torproxy
+    image: torproxy:latest
+    container_name: torproxy
+    networks:
+      - darklight
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: darklight:latest
+    container_name: scheduler
+    networks:
+      - darklight
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: darklight:latest
+    container_name: worker
+    command: ['celery', 'worker', '-A', 'crawler.tasks', '--concurrency=4']
+    networks:
+      - darklight
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    networks:
+      - darklight
+
+networks:
+  darklight:
+    name: darklight

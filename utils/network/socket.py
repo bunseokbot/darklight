@@ -37,6 +37,5 @@ class Socket:
 
                 return self.ping_check(address, port, count+1)
 
-
     def __del__(self):
         del self

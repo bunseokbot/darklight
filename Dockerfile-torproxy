@@ -1,0 +1,12 @@
+FROM ubuntu:16.04
+MAINTAINER Namjun Kim <bunseokbot@gmail.com>
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 74A941BA219EC810
+RUN echo "deb http://deb.torproject.org/torproject.org trusty main" >> /etc/apt/sources.list
+RUN apt-get update && apt-get install -y tor
+
+COPY torrc /etc/tor/torrc
+
+EXPOSE 9050
+
+CMD ["tor"]

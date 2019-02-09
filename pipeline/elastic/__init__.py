@@ -15,7 +15,11 @@ class Elastic:
             hosts=['{}:{}'.format(
                 self.ini.read('ELASTICSEARCH', 'HOST'),
                 self.ini.read('ELASTICSEARCH', 'PORT')
-            )]
+            )],
+            http_auth="{}:{}".format(
+                self.ini.read('ELASTICSEARCH', 'USERNAME'),
+                self.ini.read('ELASTICSEARCH', 'PASSWORD')
+            ),
         )
 
         # create when index not exist

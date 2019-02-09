@@ -13,8 +13,11 @@ from pipeline.elastic import Elastic
 from pipeline.elastic.documents import Webpage, Service, Port
 
 from urllib.parse import urlparse
+from io import BytesIO
 
 import pipeline.source as pipelines
+
+import boto3
 
 
 class Crawler:
@@ -129,7 +132,7 @@ class Crawler:
 
         with Elastic(ini=self.ini):
             # upload screenshot at Amazon S3
-            screenshot = 'https://darklight.amazon.com/s3/bucket/filename.png'
+            screenshot = self.upload_screenshot(obj.webpage.screenshot, id)
 
             Webpage(
                 meta=meta,
@@ -147,6 +150,23 @@ class Crawler:
                 services=[
                     Service(number=port['number'], status=port['status']) for port in obj.port]
             ).save()
+
+    def upload_screenshot(self, screenshot, id):
+        """Upload screenshot into S3 storage."""
+        bucket = self.ini.read('STORAGE', 'BUCKET_NAME')
+        key = f'screenshot/{id}.jpg'
+
+        client = boto3.client(service_name='s3',
+                              region_name=self.ini.read('STORAGE', 'AWS_REGION_NAME'),
+                              aws_access_key_id=self.ini.read('STORAGE', 'AWS_ACCESS_KEY_ID'),
+                              aws_secret_access_key=self.ini.read('STORAGE', 'AWS_SECRET_ACCESS_KEY'))
+
+        client.upload_fileobj(BytesIO(screenshot),
+                              Bucket=bucket,
+                              Key=key,
+                              ExtraArgs={'ACL': 'public-read'})
+
+        return f"{client.meta.endpoint_url}/{bucket}/{key}"
 
     def __del__(self):
         Log.i("Ending crawler")

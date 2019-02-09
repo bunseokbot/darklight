@@ -9,6 +9,7 @@ __pycache__/
 # Other custom sources
 source/*.py
 pipeline/source/*.py
+tests/files/*.ini
 
 # Distribution / packaging
 .Python
