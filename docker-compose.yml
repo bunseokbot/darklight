@@ -13,6 +13,8 @@ services:
       dockerfile: Dockerfile
     image: darklight:latest
     container_name: scheduler
+    environment:
+      - CONFIG_FILE=config.ini
     networks:
       - darklight
 
