@@ -11,6 +11,7 @@ source/*.py
 pipeline/source/*.py
 tests/files/*.ini
 backup/
+config.ini
 
 # Distribution / packaging
 .Python
