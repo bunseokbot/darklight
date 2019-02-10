@@ -1,11 +1,8 @@
-version: '3'
+version: '3.5'
 
 services:
   torproxy:
-    build:
-      context: .
-      dockerfile: Dockerfile-torproxy
-    image: torproxy:latest
+    image: bunseokbot/torproxy:latest
     container_name: torproxy
     networks:
       - darklight
@@ -25,9 +22,12 @@ services:
       dockerfile: Dockerfile
     image: darklight:latest
     container_name: worker
-    command: ['celery', 'worker', '-A', 'crawler.tasks', '--concurrency=4']
+    command: ["celery", "worker", "-A", "crawler.tasks", "--concurrency=4"]
+    environment:
+      - CONFIG_FILE=config.ini
     networks:
       - darklight
+      - database
 
   redis:
     image: redis:latest
@@ -38,3 +38,6 @@ services:
 networks:
   darklight:
     name: darklight
+  database:
+    external:
+      name: database

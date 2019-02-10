@@ -1,0 +1,55 @@
+version: '3.5'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    networks:
+      - database
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.5.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - cluster.name=darklight-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./backup/elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - database
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana-oss:6.5.0
+    container_name: kibana
+    environment:
+      - SERVER_NAME=darklight.kibana
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+    ports:
+      - 9200:9200
+    networks:
+      - database
+
+networks:
+  database:
+    name: database
