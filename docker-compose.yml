@@ -17,6 +17,7 @@ services:
       - CONFIG_FILE=config.ini
     networks:
       - darklight
+      - database
 
   worker:
     build:
