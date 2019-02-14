@@ -123,10 +123,13 @@ class Crawler:
             _class = pipeline(domain, data=obj, ini=self.ini)
 
             if _class.active:
-                Log.d("handling the {} pipeline".format(_class.name))
-                _class.handle()
+                Log.d(f"handling the {_class.name} pipeline")
+                try:
+                    _class.handle()
+                except:
+                    Log.e(f"Error while handling {_class.name} pipeline")
             else:
-                Log.d("{} pipeline isn't active".format(_class.name))
+                Log.d(f"{_class.name} pipeline isn't active")
 
             del _class
 
