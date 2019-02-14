@@ -20,9 +20,11 @@ class CrawlerTask(Task):
 
     def run(self, url):
         """Run crawler task and get result."""
-        Log.d("Receive {} url from endpoint".format(url))
+        Log.d(f"Receive {url} url from endpoint.")
         report = self.crawler.scan(url)
-        self.crawler.save(self.request.id, report)
+        if not report.is_empty():
+            Log.i(f"Saving {url} information to server.")
+            self.crawler.save(self.request.id, report)
 
 
 # register task into app

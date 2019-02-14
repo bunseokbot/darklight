@@ -160,7 +160,7 @@ class Crawler:
         key = f'screenshot/{id}.jpg'
 
         client = boto3.client(service_name='s3',
-                              region_name=self.ini.read('STORAGE', 'AWS_REGION_NAME'),
+                              region_name=self.ini.read('STORAGE', 'REGION_NAME'),
                               aws_access_key_id=self.ini.read('STORAGE', 'AWS_ACCESS_KEY_ID'),
                               aws_secret_access_key=self.ini.read('STORAGE', 'AWS_SECRET_ACCESS_KEY'))
 
