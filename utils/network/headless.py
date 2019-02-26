@@ -12,23 +12,9 @@ from urllib.parse import urlparse
 from io import BytesIO
 
 from utils.type.dynamic import DynamicObject
+from utils.logging.log import Log
 
 import json
-
-
-class InvalidURLException(Exception):
-    # Invalid URL or Website is closed
-    pass
-
-
-class InvalidHTMLException(Exception):
-    # Invalid HTML Format
-    pass
-
-
-class BrowserException(Exception):
-    # Browser got exception when headless browser return as adnormal
-    pass
 
 
 class HeadlessBrowser:
@@ -62,11 +48,12 @@ class HeadlessBrowser:
             self.driver.get(url)
         except:
             # browser scan failed
-            raise BrowserException
+            Log.e("Browser has an error.")
+            return
 
         # if driver source is none
         if not self.get_source():
-            raise InvalidURLException
+            return
 
         # run HTML parser for parse data from source
         try:
@@ -74,12 +61,13 @@ class HeadlessBrowser:
             self.soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         except:
             # website source code is not HTML
-            raise InvalidHTMLException
+            Log.e("Invalid HTML Source code.")
+            return
 
         # get HAR from driver
         self.har = json.loads(self.driver.get_log('har')[0]['message'])
 
-        return DynamicObject({
+        report = DynamicObject({
             'url': url,
             'domain': urlparse(url).netloc,
             'title': self.get_title(),
@@ -90,6 +78,8 @@ class HeadlessBrowser:
             'headers': self.get_headers(),
             'tree': self.get_website_tree(),
         })
+
+        return report
 
     def get_website_tree(self):
         """Get webpage tree (entries) and load status."""
@@ -175,3 +165,4 @@ class HeadlessBrowser:
 
     def __del__(self):
         self.driver.quit()
+        del self

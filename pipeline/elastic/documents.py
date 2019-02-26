@@ -1,5 +1,5 @@
 from elasticsearch_dsl import Document, Integer, Keyword, Text,\
-                                Nested, Boolean, InnerDoc, Index
+                                Nested, Boolean, InnerDoc, Date
 
 
 class Header(InnerDoc):
@@ -18,6 +18,7 @@ class Webpage(Document):
     url = Keyword()
     domain = Keyword()
     title = Text()
+    time = Date()
     screenshot = Keyword()
     source = Text()
     language = Keyword()

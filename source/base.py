@@ -6,7 +6,7 @@ Developed by Namjun Kim (bunseokbot@gmail.com)
 
 from uuid import uuid4
 
-from crawler.tasks import CrawlerTask
+from crawler.tasks import run_crawler
 
 from database.session import Session
 from database.engine import Engine
@@ -41,12 +41,14 @@ class SourceBase(object):
                 task_id = uuid4().hex
 
                 try:
-                    session.add(Domain(task_id, url))
-                    task = CrawlerTask().apply_async(args=[url], task_id=task_id)
-                    Log.i("CrawlerTask issued a new task id: {}".format(task.task_id))
+                    # add url into database
+                    session.add(Domain(uuid=task_id, url=url))
+                    session.commit()
+
+                    task = run_crawler.apply_async(args=(url, ), task_id=task_id)
+                    Log.i("Crawler issued a new task id {} at {}".format(
+                        task.task_id, url))
                 except:
                     Log.d("This {} url already saved into database.".format(url))
                 finally:
                     self.urls.remove(url)
-
-            session.commit()

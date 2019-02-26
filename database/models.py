@@ -1,7 +1,6 @@
 from urllib.parse import urlparse
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Text, DateTime
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -16,11 +15,11 @@ class Domain(Base):
     scheme = Column(String(5), nullable=False)
     netloc = Column(String(255), unique=True, nullable=False)
 
-    def __init__(self, uuid, domain):
-        parse = urlparse(domain)
+    def __init__(self, uuid, url):
+        # onion domain condition check routine
+        parse = urlparse(url)
         scheme, netloc = parse.scheme, parse.netloc
 
-        # onion domain condition check routine
         if not netloc.endswith('.onion'):
             raise ValueError("Invalid onion domain")
 

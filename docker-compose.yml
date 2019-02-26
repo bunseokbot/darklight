@@ -25,7 +25,7 @@ services:
       dockerfile: Dockerfile
     image: darklight:latest
     container_name: worker
-    command: ["celery", "worker", "-A", "crawler.tasks", "--concurrency=4"]
+    command: ["celery", "worker", "-A", "crawler.tasks", "--autoscale=1,7"]
     environment:
       - CONFIG_FILE=config.ini
     networks:

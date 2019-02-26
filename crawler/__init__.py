@@ -1,6 +1,4 @@
-from utils.network.headless import (
-    HeadlessBrowser, InvalidHTMLException, InvalidURLException
-)
+from utils.network.headless import HeadlessBrowser
 from utils.network.socket import Socket
 from utils.logging.log import Log
 from utils.type.dynamic import DynamicObject
@@ -12,6 +10,7 @@ from database.models import Domain
 from pipeline.elastic import Elastic
 from pipeline.elastic.documents import Webpage, Service, Port
 
+from datetime import datetime
 from urllib.parse import urlparse
 from io import BytesIO
 
@@ -32,33 +31,32 @@ class Crawler:
         """Scan and crawl url which user requested."""
         Log.i("Trying to crawl {} url".format(url))
 
+        domain = urlparse(url).netloc
+        obj = DynamicObject()
+
+        # Step 1. Visit website using headless tor browser
+        Log.d("Step 1. Visiting {} website using headless browser".format(url))
+
         browser = HeadlessBrowser(
             ini=self.ini,
             tor_network=True
         )
 
-        domain = urlparse(url).netloc
-        obj = DynamicObject()
+        report = browser.run(url)
 
-        try:
-            # Step 1. Visit website using headless tor browser
-            Log.d("Step 1. Visiting {} website using headless browser".format(url))
-            obj.webpage = browser.run(url)
+        del browser
 
-            # Step 2. Scan common service port
-            Log.d("Step 2. Scanning {} domain's common service port".format(domain))
-            obj.port = self._portscan(domain)
+        # if browser have an exception return from here
+        if not report:
+            return obj
 
-            # Step 3. TO-DO
+        obj.webpage = report
 
-        except InvalidHTMLException:
-            Log.e("Invalid HTML returned from website")
+        # Step 2. Scan common service port
+        Log.d("Step 2. Scanning {} domain's common service port".format(domain))
+        obj.port = self._portscan(domain)
 
-        except InvalidURLException:
-            Log.e("Invalid URL or website is down")
-
-        finally:
-            del browser
+        # Step 3. TO-DO
 
         return obj
 
@@ -142,10 +140,12 @@ class Crawler:
                 url=obj.webpage.url,
                 domain=obj.webpage.domain,
                 title=obj.webpage.title,
+                time=datetime.now(),
                 source=obj.webpage.source,
                 screenshot=screenshot,
                 language=obj.webpage.language,
                 headers=obj.webpage.headers,
+                tree=obj.webpage.tree,
             ).save()
 
             Port(
