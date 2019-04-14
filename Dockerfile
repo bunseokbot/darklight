@@ -3,6 +3,8 @@ MAINTAINER Namjun Kim <bunseokbot@gmail.com>
 
 ENV PYTHONUNBUFFERED 1
 
+RUN printf "deb http://archive.debian.org/debian/ jessie main\ndeb-src http://archive.debian.org/debian/ jessie main\ndeb http://security.debian.org jessie/updates main\ndeb-src http://security.debian.org jessie/updates main" > /etc/apt/sources.list
+
 RUN apt-get update \
     && apt-get install -y libmysqlclient-dev libfontconfig bzip2 curl \
     && apt-get clean \
