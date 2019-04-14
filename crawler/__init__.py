@@ -17,6 +17,7 @@ from io import BytesIO
 import pipeline.source as pipelines
 
 import boto3
+import os
 
 
 class Crawler:
@@ -155,21 +156,31 @@ class Crawler:
             ).save()
 
     def upload_screenshot(self, screenshot, id):
-        """Upload screenshot into S3 storage."""
+        """Upload screenshot into S3 storage or local storage."""
         bucket = self.ini.read('STORAGE', 'BUCKET_NAME')
         key = f'screenshot/{id}.jpg'
 
-        client = boto3.client(service_name='s3',
-                              region_name=self.ini.read('STORAGE', 'REGION_NAME'),
-                              aws_access_key_id=self.ini.read('STORAGE', 'AWS_ACCESS_KEY_ID'),
-                              aws_secret_access_key=self.ini.read('STORAGE', 'AWS_SECRET_ACCESS_KEY'))
+        # if user want to upload screenshot into s3 storage
+        if bucket:
+            client = boto3.client(service_name='s3',
+                                  region_name=self.ini.read('STORAGE', 'REGION_NAME'),
+                                  aws_access_key_id=self.ini.read('STORAGE', 'AWS_ACCESS_KEY_ID'),
+                                  aws_secret_access_key=self.ini.read('STORAGE', 'AWS_SECRET_ACCESS_KEY'))
 
-        client.upload_fileobj(BytesIO(screenshot),
-                              Bucket=bucket,
-                              Key=key,
-                              ExtraArgs={'ACL': 'public-read'})
+            client.upload_fileobj(BytesIO(screenshot),
+                                  Bucket=bucket,
+                                  Key=key,
+                                  ExtraArgs={'ACL': 'public-read'})
 
-        return f"{client.meta.endpoint_url}/{bucket}/{key}"
+            return f"{client.meta.endpoint_url}/{bucket}/{key}"
+        else:
+            if not os.path.exists('screenshot'):
+                os.mkdir('screenshot')
+
+            with open(key, 'wb') as f:
+                f.write(screenshot)
+
+            return key
 
     def __del__(self):
         Log.i("Ending crawler")
