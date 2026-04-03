@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   torproxy:
-    image: bunseokbot/torproxy:latest
+    image: shinomineko/torproxy:latest
     container_name: torproxy
     networks:
       - darklight
