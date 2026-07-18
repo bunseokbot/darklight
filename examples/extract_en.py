@@ -52,7 +52,7 @@ if not parsed_target.hostname.lower().endswith(".onion"):
 
 # Read the Elasticsearch settings, using each fallback when a key is absent.
 # Combine the host and port into the webpage index's search endpoint.
-elasticsearch_host = config.get("ELASTICSEARCH", "HOST", fallback="elasticsearch")
+elasticsearch_host = config.get("ELASTICSEARCH", "HOST", fallback="localhost")
 elasticsearch_port = config.get("ELASTICSEARCH", "PORT", fallback="9200")
 elasticsearch_username = config.get("ELASTICSEARCH", "USERNAME", fallback="")
 elasticsearch_password = config.get("ELASTICSEARCH", "PASSWORD", fallback="")

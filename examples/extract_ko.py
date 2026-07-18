@@ -53,7 +53,7 @@ if not parsed_target.hostname.lower().endswith(".onion"):
 
 # ELASTICSEARCH 설정값을 읽되, 키가 없으면 fallback의 기본값을 쓴다.
 # HOST와 PORT를 조합해 webpage 인덱스의 검색 API 주소를 만든다.
-elasticsearch_host = config.get("ELASTICSEARCH", "HOST", fallback="elasticsearch")
+elasticsearch_host = config.get("ELASTICSEARCH", "HOST", fallback="localhost")
 elasticsearch_port = config.get("ELASTICSEARCH", "PORT", fallback="9200")
 elasticsearch_username = config.get("ELASTICSEARCH", "USERNAME", fallback="")
 elasticsearch_password = config.get("ELASTICSEARCH", "PASSWORD", fallback="")

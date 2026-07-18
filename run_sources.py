@@ -42,6 +42,7 @@ def main(options=""):
                 from utils.config.env import Env
 
                 from crawler import Crawler
+                import uuid
 
                 ini = Ini(Env.read("CONFIG_FILE"))
                 url = ini.read("SOURCE", "ONION_URL").strip()
@@ -50,7 +51,7 @@ def main(options=""):
                 report = crawler.scan(url)
 
                 if not report.is_empty() and report.webpage.url == url:
-                    crawler.save(self.request.id, report)
+                    crawler.save(str(uuid.uuid4()), report)
 
                 del crawler
             finally:
