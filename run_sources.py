@@ -32,8 +32,28 @@ def run(source):
     return status
 
 
-def main():
+def main(options=""):
     """Main method for running all sources."""
+    if options == "single-mode":
+        while True:
+            try:
+                from utils.config.ini import Ini
+                from utils.config.env import Env
+
+                from cralwer import Crawler
+
+                crawler = Crawler(ini=Ini(Env.read("CONFIG_FILE")))
+                report = crawler.scan(url)
+
+                if not report.is_empty() and report.webpage.url == url:
+                    crawler.save(self.request.id, report)
+
+                del crawler
+            finally:
+                time.sleep(60)
+
+        exit(0)
+
     scheduler = BackgroundScheduler()
     scheduler.start()
 
@@ -59,4 +79,7 @@ def main():
     scheduler.shutdown()
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 1:
+        main(sys.argv[1])
+    else:
+        main()

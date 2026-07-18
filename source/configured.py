@@ -10,7 +10,7 @@ from utils.logging.log import Log
 class ConfiguredOnionCollector(SourceBase):
     """Load exactly one approved target from ``config.ini``."""
 
-    cycle = 1440
+    cycle = 0
     name = "configured onion"
 
     def collect(self):
