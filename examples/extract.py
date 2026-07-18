@@ -34,8 +34,8 @@ if target_port is not None:
 if not parsed_target.hostname.lower().endswith(".onion"):
     raise SystemExit("SOURCE.ONION_URL must point to an .onion host")
 
-elasticsearch_host = config.get("ELASTICSEARCH", "HOST", fallback="localhost")
-elasticsearch_port = config.get("ELASTICSEARCH", "PORT", fallback="9200")
+elasticsearch_host = "localhost"
+elasticsearch_port = "9200"
 elasticsearch_username = config.get("ELASTICSEARCH", "USERNAME", fallback="")
 elasticsearch_password = config.get("ELASTICSEARCH", "PASSWORD", fallback="")
 elasticsearch_url = "http://{}:{}/webpage/_search".format(
