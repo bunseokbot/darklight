@@ -11,6 +11,7 @@ services:
       dockerfile: Dockerfile
     image: darklight:latest
     container_name: scheduler
+    command: ["python", "run_sources.py", "single-mode"]
     environment:
       - CONFIG_FILE=config.ini
     volumes:
