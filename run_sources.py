@@ -10,6 +10,7 @@ from utils.logging.log import Log
 import source as sources
 
 import time
+import sys
 
 
 def run(source):
@@ -40,9 +41,12 @@ def main(options=""):
                 from utils.config.ini import Ini
                 from utils.config.env import Env
 
-                from cralwer import Crawler
+                from crawler import Crawler
 
-                crawler = Crawler(ini=Ini(Env.read("CONFIG_FILE")))
+                ini = Ini(Env.read("CONFIG_FILE"))
+                url = ini.read("SOURCE", "ONION_URL").strip()
+
+                crawler = Crawler(ini=ini)
                 report = crawler.scan(url)
 
                 if not report.is_empty() and report.webpage.url == url:
