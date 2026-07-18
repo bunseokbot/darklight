@@ -1,5 +1,3 @@
-version: '3.5'
-
 services:
   torproxy:
     image: shinomineko/torproxy:latest
@@ -13,8 +11,11 @@ services:
       dockerfile: Dockerfile
     image: darklight:latest
     container_name: scheduler
+    command: ["python", "run_sources.py", "single-mode"]
     environment:
       - CONFIG_FILE=config.ini
+    volumes:
+      - ./config.ini:/usr/src/app/config.ini:ro
     networks:
       - darklight
       - database
@@ -28,6 +29,11 @@ services:
     command: ["celery", "worker", "-A", "crawler.tasks", "--autoscale=1,7"]
     environment:
       - CONFIG_FILE=config.ini
+    volumes:
+      - ./config.ini:/usr/src/app/config.ini:ro
+      - ./pipeline/source:/usr/src/app/pipeline/source:ro
+      - ./extract.py:/usr/src/app/extract.py:ro
+      - ./screenshot:/usr/src/app/screenshot
     networks:
       - darklight
       - database
@@ -42,5 +48,5 @@ networks:
   darklight:
     name: darklight
   database:
-    external:
-      name: database
+    name: database
+    external: true

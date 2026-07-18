@@ -1,0 +1,9 @@
+.git
+.env
+backup/
+artifacts/
+screenshot/
+config.ini
+**/__pycache__/
+*.pyc
+

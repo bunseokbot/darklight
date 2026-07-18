@@ -1,6 +1,6 @@
-from .freshonion import FreshOnionCollector
-from .hiddenwiki import HiddenWikiCollector
+from .configured import ConfiguredOnionCollector
 
-# all registered collector
+# The classroom scheduler accepts only the one URL configured in config.ini.
 __all__ = [
-    FreshOnionCollector, HiddenWikiCollector]
+    ConfiguredOnionCollector,
+]

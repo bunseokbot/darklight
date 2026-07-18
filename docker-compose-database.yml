@@ -1,5 +1,3 @@
-version: '3.5'
-
 services:
   mariadb:
     image: mariadb:latest
@@ -15,6 +13,19 @@ services:
     networks:
       - database
 
+  adminer:
+    image: adminer:5.4.2-standalone
+    container_name: adminer
+    restart: always
+    depends_on:
+      - mariadb
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+    ports:
+      - 8080:8080
+    networks:
+      - database
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.5.0
     container_name: elasticsearch
@@ -23,21 +34,21 @@ services:
       - cluster.name=darklight-cluster
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
     ulimits:
       memlock:
         soft: -1
         hard: -1
       nofile:
-        soft: 65536
-        hard: 65536
+        soft: 262144
+        hard: 262144
     deploy:
       resources:
         limits:
-          memory: 1G
+          memory: 2G
     cap_add:
       - IPC_LOCK
-    volumes:
-      - ./backup/elasticsearch:/usr/share/elasticsearch/data
     networks:
       - database
 
