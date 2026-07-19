@@ -1,13 +1,13 @@
 services:
   mariadb:
-    image: mariadb:10.4
+    image: mariadb:10.2
     container_name: mariadb
     restart: always
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=darklight
+      - MYSQL_PASSWORD=darklight
+      - MYSQL_DATABASE=darklight
     volumes:
       - ./backup/mariadb:/var/lib/mysql
     networks:
