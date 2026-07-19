@@ -1,6 +1,6 @@
 services:
   mariadb:
-    image: mariadb:latest
+    image: mariadb:10.4
     container_name: mariadb
     restart: always
     environment:
